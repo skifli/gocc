@@ -126,7 +126,7 @@ func main() {
 	buildsBytes, err := cmd.CombinedOutput()
 	check(err)
 
-	builds := strings.Split(string(buildsBytes), "\n")
+	builds := strings.FieldsFunc(string(buildsBytes), func(r rune) bool {return r == '\n'})
 
 	log.Debug("Beginning compilation of targets.")
 
