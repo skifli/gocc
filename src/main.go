@@ -164,5 +164,5 @@ func main() {
 		}
 	}
 
-	log.Debugf("Compilation of all targets completed. %d / %d targets successfuly compiled (%f%%)", successfulNum, len(builds), float64(successfulNum)/float64(len(builds))*100)
+	log.Debugf("Compilation of all targets completed. %d / %d targets successfully compiled (%f%%)", successfulNum, len(builds), float64(successfulNum)/float64(len(builds))*100)
 }
