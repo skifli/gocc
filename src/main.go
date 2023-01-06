@@ -16,10 +16,9 @@ import (
 
 var VERSION = "1.0.0"
 
-var cwd = ""
 var log = logging.MustGetLogger("gocc")
 var notAllowed = make(map[string][]string)
-var successfullNum = 0
+var successfulNum = 0
 
 func check(err error) {
 	if err != nil {
@@ -75,6 +74,8 @@ func parseConfig() (string, string) {
 			}
 
 			build := strings.Split(line, "/")
+			build[0] = strings.TrimSpace(build[0])
+			build[1] = strings.TrimSpace(build[1])
 
 			if len(build) != 2 {
 				flaggy.ShowHelpAndExit(fmt.Sprintf("Error on config file:%d - Expected OS and architecture separated by a '/', found '%s'.", lineNum, line))
@@ -92,6 +93,8 @@ func parseConfig() (string, string) {
 	if dump == "" {
 		dump = filepath.Join(cwd, "build")
 		log.Debugf("Dump directory set to '%s' because it wasn't specified.", dump)
+	} else {
+		log.Debugf("Dump directory set to '%s'.", dump)
 	}
 
 	err = os.MkdirAll(dump, 0700)
@@ -126,7 +129,7 @@ func main() {
 	buildsBytes, err := cmd.CombinedOutput()
 	check(err)
 
-	builds := strings.FieldsFunc(string(buildsBytes), func(r rune) bool {return r == '\n'})
+	builds := strings.FieldsFunc(string(buildsBytes), func(r rune) bool { return r == '\n' })
 
 	log.Debug("Beginning compilation of targets.")
 
@@ -157,9 +160,9 @@ func main() {
 			log.Warningf("Failed to compile for '%s'. %s: %s", buildStr, err, strings.Join(strings.FieldsFunc(string(outputBytes), func(r rune) bool { return r == '\n' }), "; "))
 		} else {
 			log.Debugf("Successfully compiled for '%s'.", buildStr)
-			successfullNum++
+			successfulNum++
 		}
 	}
 
-	log.Debugf("Compilation of all targets completed. %d / %d targets successfully compiled (%d%%)", successfullNum, len(builds), successfullNum/len(builds)*100)
+	log.Debugf("Compilation of all targets completed. %d / %d targets successfuly compiled (%f%%)", successfulNum, len(builds), float64(successfulNum)/float64(len(builds))*100)
 }
