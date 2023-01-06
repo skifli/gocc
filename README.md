@@ -14,7 +14,7 @@ gocc (pronounced as _**/ɡɒtʃ/**_) makes cross-compilation for [Go](https://go
 
 ### Using pre-built binaries
 
-Download the binary for your OS from the [latest release](https://github.com/skifli/gocc/releases/latest). There are quick links at the top of every release for popular OSes and architectures. If you are on Linux, you may have to execute the following command in a shell to be able to run the binary.
+Download the binary for your OS from the [latest release](https://github.com/skifli/gocc/releases/latest). There are quick links at the top of every release for popular OSes and architectures. If you are on Linux or macOS, you may have to execute the following command in a shell to be able to run the binary.
 
 ```bash
 chomd +x path_to_binary
