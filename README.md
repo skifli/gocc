@@ -14,15 +14,17 @@ gocc (pronounced as _**/ɡɒtʃ/**_) makes cross-compilation for [Go](https://go
 
 ### Using pre-built binaries
 
-Download the binary for your OS from the [latest release](https://github.com/skifli/gocc/releases/latest). There are quick links at the top of every release for popular OSes and architectures. If you are on Linux or macOS, you may have to execute the following command in a shell to be able to run the binary.
+Download the binary for your OS from the [latest release](https://github.com/skifli/gocc/releases/latest). There are quick links at the top of every release for popular OSes. If you are on **Linux or macOS**, you may have to execute the following command in a shell to be able to run the binary.
 
 ```bash
-chomd +x path_to_binary
+chmod +x path_to_binary
 ```
 
 ### Running from source
 
-* Make sure you have [Go](https://go.dev) installed and is in your system environment variables as `go`. If you do not have go installed, you can install it from [here](https://go.dev/dl/).
+Use this method if none of the pre-built binaries work on your system. It is possible that your system's architecture is different to the one that the binaries were compiled for **(AMD)**. You can check your system's architecture by viewing the value of the **`GOHOSTARCH`** environment variable.
+
+* Make sure you have [Go](https://go.dev) installed and is in your system environment variables as **`go`**. If you do not have go installed, you can install it from [here](https://go.dev/dl/).
 * Download and extract the repository from [here](https://github.com/skifli/gocc/archive/refs/heads/master.zip). Alternatively, you can clone the repository with [Git](https://git-scm.com/) by running `git clone https://github.com/skifli/gocc` in a terminal.
 * Navigate into the `/src` directory of your clone of this repository.
 * Run the command `go build main.go`.
