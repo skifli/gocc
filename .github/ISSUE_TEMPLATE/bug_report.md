@@ -1,31 +1,32 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
+about: Create a bug report to help us improve
+title: '[BUG] '
+labels: 'bug'
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Description of the bug
 
-**To Reproduce**
-Steps to reproduce the behavior:
+A clear and concise description of the bug, and what it affects. Include any error messages you have seen relating to the bug.
 
-1. Compile the attached binary
-2. Error is shown when compiling for 'windows/
+## Screenshots of any errors
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+> **Note** If screenshots are not applicable, remove the above header and this note.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Steps to reproduce
 
-**System (please complete the following information):**
- - OS: [e.g. iOS]
- - Architecture [e.g. amd64]
- - gocc version [e.g. v1.0.0]
+A list of steps to follow to reproduce the error. Please remove any extra steps that are not needed, and find the bare minimum that is required to consistently reproduce the bug. E.g.,
 
-**Additional context**
-Add any other context about the problem here.
+* Download the attached **`.go`** file.
+* Compile it for **`windows/386`** on a host of **`windows/amd64`**.
+* View the error reported.
+
+## Host OS and architecture
+
+E.g., **`windows/amd64`**.
+
+## Any additional context
+
+> **Note** If additional context is not applicable, remove the above header and this note.
