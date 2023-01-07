@@ -2,4 +2,4 @@ go build -o main main.go
 
 clear
 
-./main main.go
+./main main.go --config main.cfg

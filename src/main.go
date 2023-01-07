@@ -8,16 +8,18 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/integrii/flaggy"
 	"github.com/op/go-logging"
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "1.0.0"
+var VERSION = "1.0.1"
 
 var log = logging.MustGetLogger("gocc")
 var notAllowed = make(map[string][]string)
+var processedNum = 0
 var successfulNum = 0
 
 func check(err error) {
@@ -133,6 +135,14 @@ func main() {
 
 	log.Debug("Beginning compilation of targets.")
 
+	cmd = exec.Command("gcc")
+
+	if err := cmd.Run(); err == nil {
+		os.Setenv("CGO_ENABLED", "1")
+	}
+
+	start := time.Now()
+
 	for _, buildStr := range builds {
 		build := strings.Split(buildStr, "/")
 
@@ -142,6 +152,7 @@ func main() {
 		}
 
 		log.Debugf("Compiling for '%s'.", buildStr)
+		processedNum++
 
 		path := ""
 
@@ -164,5 +175,5 @@ func main() {
 		}
 	}
 
-	log.Debugf("Compilation of all targets completed. %d / %d targets successfully compiled (%f%%)", successfulNum, len(builds), float64(successfulNum)/float64(len(builds))*100)
+	log.Debugf("Compilation of targets completed in %.2f seconds. %d / %d targets successfully compiled (%.2f%%).", time.Since(start).Seconds(), successfulNum, processedNum, float64(successfulNum)/float64(processedNum)*100)
 }
