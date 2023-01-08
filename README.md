@@ -21,13 +21,13 @@ gocc (pronounced as _**/ɡɒtʃ/**_) makes cross-compilation for [Go](https://go
 
 ### Using pre-built binaries
 
-Download the binary for your OS from the [latest release](https://github.com/skifli/gocc/releases/latest). There are quick links at the top of every release for popular OSes.
+Pre-built binaries are made available for every `x.x` release. If you want more frequent updates, then [run from source](#running-from-source). Download the binary for your OS from the [latest release](https://github.com/skifli/gocc/releases/latest). There are quick links at the top of every release for popular OSes.
 
 > **Note** If you are on **Linux or macOS**, you may have to execute **`chmod +x path_to_binary`** in a shell to be able to run the binary.
 
 ### Running from source
 
-Use this method if none of the pre-built binaries work on your system. It is possible that your system's architecture is different to the one that the binaries were compiled for **(AMD)**.
+Use this method if none of the pre-built binaries work on your system, or if you want more frequent updates. It is possible that your system's architecture is different to the one that the binaries were compiled for **(AMD)**.
 
 > **Note** You can check your system's architecture by viewing the value of the **`GOHOSTARCH`** environment variable.
 
@@ -40,7 +40,7 @@ Use this method if none of the pre-built binaries work on your system. It is pos
 ## Usage
 
 ```
-gocc v1.1.1: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc
+gocc v1.1.2: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc
 
 Usage of main:
         main [target] <options>

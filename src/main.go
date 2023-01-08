@@ -16,13 +16,13 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "1.1.1"
+var VERSION = "1.1.2"
 
 var json = jsoniter.ConfigFastest
 var log = logging.MustGetLogger("gocc")
 var mode = ""
 var processedNum = 0
-var targets = make(map[string][]string)
+var targets []string
 var successfulNum = 0
 
 func check(err error) {
@@ -105,20 +105,8 @@ func parseConfig() (string, string) {
 		}
 
 		if targetsAny, ok := configJSON["targets"]; ok {
-			targetsSlice := targetsAny.([]any)
-
-			for _, lineAny := range targetsSlice {
-				line := lineAny.(string)
-
-				build := strings.Split(line, "/")
-				build[0] = strings.TrimSpace(build[0])
-				build[1] = strings.TrimSpace(build[1])
-
-				if len(build) != 2 {
-					argsError(fmt.Sprintf("Error in configuration file - Expected OS and architecture separated by a '/', found '%s'.", line))
-				}
-
-				targets[build[0]] = append(targets[build[0]], build[1])
+			for _, target := range targetsAny.([]any) {
+				targets = append(targets, target.(string))
 			}
 		} else {
 			argsError("Config file does not contain required key 'targets'.")
@@ -140,35 +128,15 @@ func parseConfig() (string, string) {
 	return dump, target
 }
 
-func checkNotAllowed(build []string) bool {
+func checkNotAllowed(buildStr string, build []string) bool {
 	if mode == "disallow" {
-		if slices.Contains(targets["*"], build[1]) {
-			return true
-		}
-
-		if slices.Contains(targets[build[0]], "*") {
-			return true
-		}
-
-		if slices.Contains(targets[build[0]], build[1]) {
+		if slices.Contains(targets, buildStr) || slices.Contains(targets, build[0]+"/*") || slices.Contains(targets, "*/"+build[1]) {
 			return true
 		}
 	} else {
-		found := false
-
-		if slices.Contains(targets["*"], build[1]) {
-			found = true
+		if !slices.Contains(targets, buildStr) && !slices.Contains(targets, build[0]+"/*") && !slices.Contains(targets, "*/"+build[1]) {
+			return true
 		}
-
-		if slices.Contains(targets[build[0]], "*") {
-			found = true
-		}
-
-		if slices.Contains(targets[build[0]], build[1]) {
-			found = true
-		}
-
-		return !found
 	}
 
 	return false
@@ -199,7 +167,7 @@ func main() {
 	for _, buildStr := range builds {
 		build := strings.Split(buildStr, "/")
 
-		if checkNotAllowed(build) {
+		if checkNotAllowed(buildStr, build) {
 			log.Debugf("Skipping '%s' because the config disallows it.", buildStr)
 			continue
 		}
