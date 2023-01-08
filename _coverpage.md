@@ -2,10 +2,8 @@
 
 > Go Cross-Compilation made easy.
 
-- Simple.
-- Fast.
-- Open Source.
-
-[GitHub](https://github.com/skifli/gocc)
+- Simple
+- Fast
+- Open Source
 
 [Installation](https://github.com/skifli/gocc#installation)
