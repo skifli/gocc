@@ -1,30 +1,10 @@
 {
-    "mode": "disallow",
+    "mode": "allow",
     "targets": [
-        "aix/*",
-        "android/*",
-        "darwin/arm64",
-        "dragonfly/*",
-        "freebsd/*",
-        "illumos/*",
-        "ios/*",
-        "js/*",
-        "linux/arm",
-        "linux/arm64",
-        "linux/loong64",
-        "linux/mips",
-        "linux/mips64",
-        "linux/mips64le",
-        "linux/mipsle",
-        "linux/ppc64",
-        "linux/ppc64le",
-        "linux/riscv64",
-        "linux/s390x",
-        "netbsd/*",
-        "openbsd/*",
-        "plan9/*",
-        "solaris/*",
-        "windows/arm",
-        "windows/arm64"
+        "darwin/amd64",
+        "linux/386",
+        "linux/amd64",
+        "windows/386",
+        "windows/amd64"
     ]
 }
