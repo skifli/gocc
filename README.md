@@ -14,6 +14,7 @@
     - [How the configuration file works](#how-the-configuration-file-works)
   - [Known issues](#known-issues)
     - [#1 - **loadinternal: cannot find runtime/cgo**](#1---loadinternal-cannot-find-runtimecgo)
+  - [Stargazers over time](#stargazers-over-time)
 
 gocc (pronounced as _**/ɡɒtʃ/**_) makes cross-compilation for [Go](https://go.dev) easy, by automating the process on all OSes. It allows for easy cofiguration of build architectures, and has pre-built binaries for all releases.
 
@@ -79,3 +80,7 @@ This issue is caused by the **`runtime/cgo`** module being disabled. gocc will a
 * [macOS](https://github.com/danielpinto8zz6/c-cpp-compile-run/blob/HEAD/docs/COMPILER_SETUP.md#macos)
 
 > **Note** On **macOS**, **`clang`** and **`gcc`** are the same, which is why the installation insutrctions for macOS say to install **`clang`**.
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/skifli/gocc.svg)](https://starchart.cc/skifli/gocc)
