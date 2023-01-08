@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,15 +11,18 @@ import (
 	"time"
 
 	"github.com/integrii/flaggy"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/op/go-logging"
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "1.0.1"
+var VERSION = "1.1.0"
 
+var json = jsoniter.ConfigFastest
 var log = logging.MustGetLogger("gocc")
-var notAllowed = make(map[string][]string)
+var mode = ""
 var processedNum = 0
+var targets = make(map[string][]string)
 var successfulNum = 0
 
 func check(err error) {
@@ -65,30 +68,48 @@ func parseConfig() (string, string) {
 			check(file.Close())
 		}()
 
-		scanner := bufio.NewScanner(file)
-		lineNum := 1
+		bytes, err := io.ReadAll(file)
+		check(err)
 
-		for scanner.Scan() {
-			line := scanner.Text()
+		configJSON := make(map[string]any)
+		err = json.Unmarshal(bytes, &configJSON)
+		check(err)
 
-			if len(strings.TrimSpace(line)) == 0 || strings.HasPrefix(line, "#") {
-				continue
+		if modeAny, ok := configJSON["mode"]; ok {
+			switch value := modeAny.(type) {
+			case string:
+				mode = value
+			default:
+				flaggy.ShowHelpAndExit("Expected config key 'mode' to have type of 'string'.\n\nUsage:\n")
 			}
 
-			build := strings.Split(line, "/")
-			build[0] = strings.TrimSpace(build[0])
-			build[1] = strings.TrimSpace(build[1])
-
-			if len(build) != 2 {
-				flaggy.ShowHelpAndExit(fmt.Sprintf("Error on config file:%d - Expected OS and architecture separated by a '/', found '%s'.", lineNum, line))
+			if mode != "allow" && mode != "disallow" {
+				flaggy.ShowHelpAndExit(fmt.Sprintf("Expected config key 'mode' to have value of either 'allowed' or 'disallowed', got '%s'.\n\nUsage:\n", mode))
 			}
-
-			notAllowed[build[0]] = append(notAllowed[build[0]], build[1])
-
-			lineNum++
+		} else {
+			flaggy.ShowHelpAndExit("Config file does not contain required key 'mode'.\n\nUsage:\n")
 		}
 
-		check(scanner.Err())
+		if targetsAny, ok := configJSON["targets"]; ok {
+			targetsSlice := targetsAny.([]any)
+
+			for _, lineAny := range targetsSlice {
+				line := lineAny.(string)
+
+				build := strings.Split(line, "/")
+				build[0] = strings.TrimSpace(build[0])
+				build[1] = strings.TrimSpace(build[1])
+
+				if len(build) != 2 {
+					flaggy.ShowHelpAndExit(fmt.Sprintf("Error in configuration file - Expected OS and architecture separated by a '/', found '%s'.\n\nUsage:\n", line))
+				}
+
+				targets[build[0]] = append(targets[build[0]], build[1])
+			}
+		} else {
+			flaggy.ShowHelpAndExit("Config file does not contain required key 'targets'.\n\nUsage:\n")
+		}
+
 		log.Debug("Parsed configuration file.")
 	}
 
@@ -106,16 +127,34 @@ func parseConfig() (string, string) {
 }
 
 func checkNotAllowed(build []string) bool {
-	if slices.Contains(notAllowed["*"], build[1]) {
-		return true
-	}
+	if mode == "disallow" {
+		if slices.Contains(targets["*"], build[1]) {
+			return true
+		}
 
-	if slices.Contains(notAllowed[build[0]], "*") {
-		return true
-	}
+		if slices.Contains(targets[build[0]], "*") {
+			return true
+		}
 
-	if slices.Contains(notAllowed[build[0]], build[1]) {
-		return true
+		if slices.Contains(targets[build[0]], build[1]) {
+			return true
+		}
+	} else {
+		found := false
+
+		if slices.Contains(targets["*"], build[1]) {
+			found = true
+		}
+
+		if slices.Contains(targets[build[0]], "*") {
+			found = true
+		}
+
+		if slices.Contains(targets[build[0]], build[1]) {
+			found = true
+		}
+
+		return !found
 	}
 
 	return false

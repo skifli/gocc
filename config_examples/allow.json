@@ -1,0 +1,7 @@
+{
+    "mode": "allow",
+    "targets": [
+        "windows/*",
+        "*/386"
+    ]
+}

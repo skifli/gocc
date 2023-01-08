@@ -1,0 +1,7 @@
+{
+    "mode": "disallow",
+    "targets": [
+        "windows/*",
+        "*/386"
+    ]
+}

@@ -11,7 +11,7 @@
     - [Running from source](#running-from-source)
   - [Usage](#usage)
   - [Configuration](#configuration)
-  - [How to use the configuration file](#how-to-use-the-configuration-file)
+    - [How the configuration file works](#how-the-configuration-file-works)
   - [Known issues](#known-issues)
     - [#1 - **loadinternal: cannot find runtime/cgo**](#1---loadinternal-cannot-find-runtimecgo)
 
@@ -57,13 +57,17 @@ Flags:
 
 ## Configuration
 
-An example configuration file can be found in [`/src/example.cfg`](https://github.com/skifli/gocc/blob/main/src/example.cfg).
+Example configuration files can be found in [`/config_examples`](https://github.com/skifli/gocc/blob/main/config_examples).
 
-## How to use the configuration file
+### How the configuration file works
 
-All OS / Architecture combinations that are found in the config file are not compiled for. The combinations should follow the format of the output of `go tool dist list`. For example, `windows/amd64` is valid, but `windows\amd64` is not. The `*` character can also be used to specify all targets. For example, `windows/*` applies to all architectures under the OS _**Windows**_, regardless of architecture; `*/386` applies to all OSes with the architecture _**`386` (32-Bit)**_, regardless of OS.
+Open [`/config_examples/allow.json`](https://github.com/skifli/gocc/blob/main/config_examples/allow.json). You will see two keys - `mode`, and **`targets`**. Mode can be a string of two values - **allow**, or **disallow**. The file you have just opened has the value of `mode` set to **allow**. This means that only the OS / Architecture combinitations in the list **`targets`** will be compiled for. **`targets`** is a list of strings containing the OS / Architecture combinations, in the form outputted from the command **`go tool dist list`**. This means **`windows/amd64`** is valid, but not **`windows\amd64`**. If you ran the program with the configuration file you have open, it would **only compile** for all architectures under the OS **Windows**, and all OSes with the architecture **386 (32-Bit)**.
 
-> **Note** Lines _**starting**_ with `#` are ignored when parsing the configuration file. If you provide a combination that does not exist, the program will ignore it, and _**no error will be raised**_. If the program encounters an error when parsing the file, the script will output the line the error occured on, and exit.
+> **Note** The `*` character can also be used to specify all targets. For example, `windows/*` applies to all architectures under the OS _**Windows**_, regardless of architecture; `*/386` applies to all OSes with the architecture _**`386` (32-Bit)**_, regardless of OS.
+
+Now open [`/config_examples/disallow.json`](https://github.com/skifli/gocc/blob/main/config_examples/disallow.json). You will see the file is the exact same as the previously opened file, except for the fact that `mode` is set to `disallow`. This means that all OS / Architecture combinations in the list **`targets`** will **not** be compiled for, and all combinations not in the list **will** be compiled for. If you ran the program with the configuration file you have open, it **would compile** for all OSes except for **Windows**, and for architectures except for **386 (32-Bit)**.
+
+> **Note** If you provide a combination that does not exist, the program will ignore it, and _**no error will be raised**_. If the program encounters an error when parsing the config file, the script will output the culprit line / combination, and exit.
 
 ## Known issues
 

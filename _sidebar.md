@@ -4,6 +4,6 @@
     - [Running from source](#running-from-source)
   - [Usage](#usage)
   - [Configuration](#configuration)
-  - [How to use the configuration file](#how-to-use-the-configuration-file)
+    - [How the configuration file works](#how-the-configuration-file-works)
   - [Known issues](#known-issues)
     - [#1 - **loadinternal: cannot find runtime/cgo**](#1---loadinternal-cannot-find-runtimecgo)
