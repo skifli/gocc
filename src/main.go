@@ -10,13 +10,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/integrii/flaggy"
 	jsoniter "github.com/json-iterator/go"
+	flag "github.com/ogier/pflag"
 	"github.com/op/go-logging"
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "1.1.0"
+var VERSION = "1.1.1"
 
 var json = jsoniter.ConfigFastest
 var log = logging.MustGetLogger("gocc")
@@ -31,36 +31,50 @@ func check(err error) {
 	}
 }
 
+func argsError(errorMsg string) {
+	fmt.Printf("%s\nRun '%s -h' for help.", errorMsg, os.Args[0])
+	os.Exit(1)
+}
+
 func parseConfig() (string, string) {
 	cwd, err := os.Getwd()
 	check(err)
 
-	target := ""
 	dump := ""
 	config := ""
+	version := false
 
-	flaggy.AddPositionalValue(&target, "target", 1, true, "The path to the file to cross-compile.")
-	flaggy.String(&dump, "d", "dump", "The path to the folder to dump the cross-compiled binaries in. Defaults to `build` in the cwd. The specified folder will be created if it does not exist.")
-	flaggy.String(&config, "c", "config", "The path to the config file.")
+	flag.BoolVar(&version, "version", false, "Displays the program version string and exits.")
+	flag.StringVar(&dump, "dump", "", "The path to the folder to dump the cross-compiled binaries in. Defaults to `build` in the cwd. The specified folder will be created if it does not exist.")
+	flag.StringVar(&config, "config", "", "The path to the config file.")
 
-	flaggy.DefaultParser.Description = "gocc: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc"
-	flaggy.SetVersion(VERSION)
+	flag.Usage = func() {
+		fmt.Printf("gocc v%s: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc\n\nUsage of %s:\n\t%s [target] <options>\n\nPositional variables:\n\ttarget=\"\": The path to the file to cross-compile (Required).\n\nFlags:\n", VERSION, os.Args[0], os.Args[0])
+		flag.PrintDefaults()
+	}
 
-	flaggy.Parse()
+	flag.Parse()
+
+	if version {
+		fmt.Printf("gocc v%s", VERSION)
+		os.Exit(1)
+	}
+
+	target := flag.Arg(0)
 
 	if target == "" {
-		flaggy.ShowHelpAndExit("No target file to cross-compile specified.\n\nUsage:\n")
+		argsError("No target file to cross-compile specified.")
 	}
 
 	if _, err := os.Stat(target); errors.Is(err, os.ErrNotExist) {
-		flaggy.ShowHelpAndExit(fmt.Sprintf("Target file '%s' to cross-compile does not exist.\n\nUsage:\n", target))
+		argsError(fmt.Sprintf("Target file '%s' to cross-compile does not exist.", target))
 	}
 
 	if config != "" {
 		file, err := os.Open(config)
 
 		if errors.Is(err, os.ErrNotExist) {
-			flaggy.ShowHelpAndExit(fmt.Sprintf("Config file '%s' does not exist.\n\nUsage:\n", config))
+			argsError(fmt.Sprintf("Config file '%s' does not exist.", config))
 		}
 
 		check(err)
@@ -80,14 +94,14 @@ func parseConfig() (string, string) {
 			case string:
 				mode = value
 			default:
-				flaggy.ShowHelpAndExit("Expected config key 'mode' to have type of 'string'.\n\nUsage:\n")
+				argsError("Expected config key 'mode' to have type of 'string'.")
 			}
 
 			if mode != "allow" && mode != "disallow" {
-				flaggy.ShowHelpAndExit(fmt.Sprintf("Expected config key 'mode' to have value of either 'allowed' or 'disallowed', got '%s'.\n\nUsage:\n", mode))
+				argsError(fmt.Sprintf("Expected config key 'mode' to have value of either 'allowed' or 'disallowed', got '%s'.", mode))
 			}
 		} else {
-			flaggy.ShowHelpAndExit("Config file does not contain required key 'mode'.\n\nUsage:\n")
+			argsError("Config file does not contain required key 'mode'.")
 		}
 
 		if targetsAny, ok := configJSON["targets"]; ok {
@@ -101,13 +115,13 @@ func parseConfig() (string, string) {
 				build[1] = strings.TrimSpace(build[1])
 
 				if len(build) != 2 {
-					flaggy.ShowHelpAndExit(fmt.Sprintf("Error in configuration file - Expected OS and architecture separated by a '/', found '%s'.\n\nUsage:\n", line))
+					argsError(fmt.Sprintf("Error in configuration file - Expected OS and architecture separated by a '/', found '%s'.", line))
 				}
 
 				targets[build[0]] = append(targets[build[0]], build[1])
 			}
 		} else {
-			flaggy.ShowHelpAndExit("Config file does not contain required key 'targets'.\n\nUsage:\n")
+			argsError("Config file does not contain required key 'targets'.")
 		}
 
 		log.Debug("Parsed configuration file.")

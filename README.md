@@ -40,19 +40,18 @@ Use this method if none of the pre-built binaries work on your system. It is pos
 ## Usage
 
 ```
-main - gocc: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc.
+gocc v1.1.1: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc
 
-Usage:
-    main [target]
+Usage of main:
+        main [target] <options>
 
-Positional Variables: 
-    target   The path to the file to cross-compile. (Required)
+Positional variables:
+        target="": The path to the file to cross-compile (Required).
 
-Flags: 
-       --version   Displays the program version string.
-    -h --help      Displays help with available flag, subcommand, and positional value parameters.
-    -d --dump      The path to the folder to dump the cross-compiled binaries in. Defaults to `build` in the cwd. The folder will be created if it does not exist.
-    -c --config    The path to the config file.
+Flags:
+      --config="": The path to the config file.
+      --dump="": The path to the folder to dump the cross-compiled binaries in. Defaults to `build` in the cwd. The specified folder will be created if it does not exist.
+      --version=false: Displays the program version string and exits.
 ```
 
 ## Configuration
