@@ -57,7 +57,7 @@ func parseConfig() (string, string) {
 
 	if version {
 		fmt.Printf("gocc v%s", VERSION)
-		os.Exit(1)
+		os.Exit(0)
 	}
 
 	target := flag.Arg(0)
