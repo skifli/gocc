@@ -19,6 +19,6 @@ A clear and concise description of what you want to happen.
 
 A clear and concise description of any alternative solutions or features you've considered.
 
-## Additional context /screenshots
+## Additional context / screenshots
 
 > **Note** If additional context is not applicable, remove the above header and this note.
