@@ -6,4 +6,4 @@
 - Fast
 - Open Source
 
-[Installation](https://github.com/skifli/gocc#installation)
+[Installation](#installation)
