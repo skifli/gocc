@@ -6,7 +6,6 @@ A clear and concise description of what the problem was.
 
 A clear and concise description of all changes you have made.
 
-
 ## Screenshots
 
 > **Note** If screenshots are not applicable, remove the above header and this note.
