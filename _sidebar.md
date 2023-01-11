@@ -7,3 +7,4 @@
     - [How the configuration file works](#how-the-configuration-file-works)
   - [Known issues](#known-issues)
     - [#1 - **loadinternal: cannot find runtime/cgo**](#1---loadinternal-cannot-find-runtimecgo)
+  - [Stargazers over time](#stargazers-over-time)

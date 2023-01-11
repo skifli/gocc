@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -16,7 +17,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "1.1.2"
+var VERSION = "v1.2.0"
 
 var json = jsoniter.ConfigFastest
 var log = logging.MustGetLogger("gocc")
@@ -49,14 +50,14 @@ func parseConfig() (string, string) {
 	flag.StringVar(&config, "config", "", "The path to the config file.")
 
 	flag.Usage = func() {
-		fmt.Printf("gocc v%s: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc\n\nUsage of %s:\n\t%s [target] <options>\n\nPositional variables:\n\ttarget=\"\": The path to the file to cross-compile (Required).\n\nFlags:\n", VERSION, os.Args[0], os.Args[0])
+		fmt.Printf("gocc %s: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc\n\nUsage of %s:\n\t%s [target] <options>\n\nPositional variables:\n\ttarget=\"\": The path to the file to cross-compile (Required).\n\nFlags:\n", VERSION, os.Args[0], os.Args[0])
 		flag.PrintDefaults()
 	}
 
 	flag.Parse()
 
 	if version {
-		fmt.Printf("gocc v%s", VERSION)
+		fmt.Printf("gocc %s", VERSION)
 		os.Exit(0)
 	}
 
@@ -128,6 +129,28 @@ func parseConfig() (string, string) {
 	return dump, target
 }
 
+func checkForUpdate() {
+	resp, err := http.Get("https://api.github.com/repos/skifli/gocc/releases/latest")
+	check(err)
+
+	defer func() {
+		resp.Body.Close()
+	}()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	check(err)
+
+	bodyJson := make(map[string]any)
+	err = json.Unmarshal(bodyBytes, &bodyJson)
+	check(err)
+
+	tag := bodyJson["tag_name"].(string)
+
+	if tag != VERSION {
+		log.Warningf("Update available (%s -> %s).", VERSION, tag)
+	}
+}
+
 func checkNotAllowed(buildStr string, build []string) bool {
 	if mode == "disallow" {
 		if slices.Contains(targets, buildStr) || slices.Contains(targets, build[0]+"/*") || slices.Contains(targets, "*/"+build[1]) {
@@ -143,7 +166,9 @@ func checkNotAllowed(buildStr string, build []string) bool {
 }
 
 func main() {
-	logging.SetBackend(logging.NewBackendFormatter(logging.NewLogBackend(os.Stderr, "", 0), logging.MustStringFormatter(`%{color}[%{time:15:04:05.000}] %{level} (%{id})%{color:reset} - %{message}`)))
+	logging.SetBackend(logging.NewBackendFormatter(logging.NewLogBackend(os.Stderr, "", 0), logging.MustStringFormatter(`%{color}[%{time:15:04:05.000}] %{level}%{color:reset} - %{message}`)))
+
+	checkForUpdate()
 
 	dump, target := parseConfig()
 	targetName := target[:len(target)-len(filepath.Ext(target))]

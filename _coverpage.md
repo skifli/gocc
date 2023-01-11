@@ -1,4 +1,4 @@
-# gocc <small>v1.1.1</small>
+# gocc <small>v1.2.0</small>
 
 > Go Cross-Compilation made easy.
 
