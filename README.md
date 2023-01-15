@@ -3,7 +3,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/skifli/gocc)](https://goreportcard.com/report/github.com/skifli/gocc)
 ![Lines of Code](https://img.shields.io/github/languages/code-size/skifli/gocc)
 [![Release Downloads](https://img.shields.io/github/downloads/skifli/gocc/total.svg)](https://github.com/skifli/gocc/releases)
-[![Discord](https://img.shields.io/discord/1061211146058743859?color=7289DA&logo=discord&logoColor=white)](https://discord.gg/BzXc9n4Sfj)
 
 - [gocc](#gocc)
   - [Installation](#installation)
