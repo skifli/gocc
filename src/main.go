@@ -17,7 +17,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "v1.2.0"
+var VERSION = "v1.3.0"
 
 var log = logging.MustGetLogger("gocc")
 var mode = ""
