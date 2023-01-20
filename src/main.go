@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	jsoniter "github.com/json-iterator/go"
+	"github.com/goccy/go-json"
 	flag "github.com/ogier/pflag"
 	"github.com/op/go-logging"
 	"golang.org/x/exp/slices"
@@ -19,7 +19,6 @@ import (
 
 var VERSION = "v1.2.0"
 
-var json = jsoniter.ConfigFastest
 var log = logging.MustGetLogger("gocc")
 var mode = ""
 var processedNum = 0
