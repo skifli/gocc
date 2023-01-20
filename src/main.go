@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/akamensky/argparse"
 	"github.com/goccy/go-json"
-	flag "github.com/ogier/pflag"
 	"github.com/op/go-logging"
 	"golang.org/x/exp/slices"
 )
@@ -40,41 +40,26 @@ func parseConfig() (string, string) {
 	cwd, err := os.Getwd()
 	check(err)
 
-	dump := ""
-	config := ""
-	version := false
+	parser := argparse.NewParser("gocc", fmt.Sprintf("Go Cross-Compiling made easy (%s). Get more information at https://github.com/skifli/gocc", VERSION))
 
-	flag.BoolVar(&version, "version", false, "Displays the program version string and exits.")
-	flag.StringVar(&dump, "dump", "", "The path to the folder to dump the cross-compiled binaries in. Defaults to `build` in the cwd. The specified folder will be created if it does not exist.")
-	flag.StringVar(&config, "config", "", "The path to the config file.")
+	target := parser.StringPositional(&argparse.Options{Required: true, Help: "The path to the file to cross-."})
+	dump := parser.String("d", "dump", &argparse.Options{Required: false, Help: "The path to the folder to dump the cross-compiled binaries in. Defaults to `build` in the cwd. The specified folder will be created if it does not exist."})
+	config := parser.String("c", "config", &argparse.Options{Required: false, Help: "The path to the config file."})
 
-	flag.Usage = func() {
-		fmt.Printf("gocc %s: Go Cross-Compiling made easy. Get more information at https://github.com/skifli/gocc\n\nUsage of %s:\n\t%s [target] <options>\n\nPositional variables:\n\ttarget=\"\": The path to the file to cross-compile (Required).\n\nFlags:\n", VERSION, os.Args[0], os.Args[0])
-		flag.PrintDefaults()
+	err = parser.Parse(os.Args)
+
+	if err != nil {
+		panic(err)
+	}
+	if _, err := os.Stat(*target); errors.Is(err, os.ErrNotExist) {
+		argsError(fmt.Sprintf("Target file '%s' to cross-compile does not exist.", *target))
 	}
 
-	flag.Parse()
-
-	if version {
-		fmt.Printf("gocc %s", VERSION)
-		os.Exit(0)
-	}
-
-	target := flag.Arg(0)
-
-	if target == "" {
-		argsError("No target file to cross-compile specified.")
-	}
-
-	if _, err := os.Stat(target); errors.Is(err, os.ErrNotExist) {
-		argsError(fmt.Sprintf("Target file '%s' to cross-compile does not exist.", target))
-	}
-
-	if config != "" {
-		file, err := os.Open(config)
+	if *config != "" {
+		file, err := os.Open(*config)
 
 		if errors.Is(err, os.ErrNotExist) {
-			argsError(fmt.Sprintf("Config file '%s' does not exist.", config))
+			argsError(fmt.Sprintf("Config file '%s' does not exist.", *config))
 		}
 
 		check(err)
@@ -115,17 +100,17 @@ func parseConfig() (string, string) {
 		log.Debug("Parsed configuration file.")
 	}
 
-	if dump == "" {
-		dump = filepath.Join(cwd, "build")
+	if *dump == "" {
+		*dump = filepath.Join(cwd, "build")
 		log.Debugf("Dump directory set to '%s' because it wasn't specified.", dump)
 	} else {
 		log.Debugf("Dump directory set to '%s'.", dump)
 	}
 
-	err = os.MkdirAll(dump, 0700)
+	err = os.MkdirAll(*dump, 0700)
 	check(err)
 
-	return dump, target
+	return *dump, *target
 }
 
 func checkForUpdate() {
