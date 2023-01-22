@@ -49,7 +49,7 @@ usage: gocc [-h|--help] [_positionalArg_gocc_1 "<value>"] [-d|--dump "<value>"]
 Arguments:
 
   -h  --help                   Print help information
-      --_positionalArg_gocc_1  The path to the file to cross-.
+      --_positionalArg_gocc_1  The path to the file to cross-compile.
   -d  --dump                   The path to the folder to dump the
                                cross-compiled binaries in. Defaults to `build`
                                in the cwd. The specified folder will be created

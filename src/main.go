@@ -42,7 +42,7 @@ func parseConfig() (string, string) {
 
 	parser := argparse.NewParser("gocc", fmt.Sprintf("Go Cross-Compiling made easy (%s). Get more information at https://github.com/skifli/gocc", VERSION))
 
-	target := parser.StringPositional(&argparse.Options{Required: true, Help: "The path to the file to cross-."})
+	target := parser.StringPositional(&argparse.Options{Required: true, Help: "The path to the file to cross-compile."})
 	dump := parser.String("d", "dump", &argparse.Options{Required: false, Help: "The path to the folder to dump the cross-compiled binaries in. Defaults to `build` in the cwd. The specified folder will be created if it does not exist."})
 	config := parser.String("c", "config", &argparse.Options{Required: false, Help: "The path to the config file."})
 
