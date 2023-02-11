@@ -13,13 +13,15 @@ import (
 
 	"github.com/akamensky/argparse"
 	"github.com/goccy/go-json"
-	"github.com/op/go-logging"
+	"github.com/skifli/golog"
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "v1.3.0"
+var VERSION = "v1.3.1"
 
-var log = logging.MustGetLogger("gocc")
+var logger = golog.NewLogger([]*golog.Log{
+	golog.NewLog([]*os.File{os.Stderr}, golog.FormatterHuman),
+})
 var mode = ""
 var processedNum = 0
 var targets []string
@@ -27,7 +29,7 @@ var successfulNum = 0
 
 func check(err error) {
 	if err != nil {
-		log.Fatal(err)
+		logger.Panic(err, nil)
 	}
 }
 
@@ -97,14 +99,14 @@ func parseConfig() (string, string) {
 			argsError("Config file does not contain required key 'targets'.")
 		}
 
-		log.Debug("Parsed configuration file.")
+		logger.Debug("Parsed configuration file.", nil)
 	}
 
 	if *dump == "" {
 		*dump = filepath.Join(cwd, "build")
-		log.Debugf("Dump directory set to '%s' because it wasn't specified.", dump)
+		logger.Debugf("Dump directory set to '%s' because it wasn't specified.", nil, *dump)
 	} else {
-		log.Debugf("Dump directory set to '%s'.", dump)
+		logger.Debugf("Dump directory set to '%s'.", nil, *dump)
 	}
 
 	err = os.MkdirAll(*dump, 0700)
@@ -131,7 +133,7 @@ func checkForUpdate() {
 	tag := bodyJson["tag_name"].(string)
 
 	if tag != VERSION {
-		log.Warningf("Update available (%s -> %s).", VERSION, tag)
+		logger.Warningf("Update available (%s -> %s).", nil, VERSION, tag)
 	}
 }
 
@@ -150,8 +152,6 @@ func checkNotAllowed(buildStr string, build []string) bool {
 }
 
 func main() {
-	logging.SetBackend(logging.NewBackendFormatter(logging.NewLogBackend(os.Stderr, "", 0), logging.MustStringFormatter(`%{color}[%{time:15:04:05.000}] %{level}%{color:reset} - %{message}`)))
-
 	checkForUpdate()
 
 	dump, target := parseConfig()
@@ -163,7 +163,7 @@ func main() {
 
 	builds := strings.FieldsFunc(string(buildsBytes), func(r rune) bool { return r == '\n' })
 
-	log.Debug("Beginning compilation of targets.")
+	logger.Debug("Beginning compilation of targets.", nil)
 
 	cmd = exec.Command("gcc")
 
@@ -177,11 +177,11 @@ func main() {
 		build := strings.Split(buildStr, "/")
 
 		if checkNotAllowed(buildStr, build) {
-			log.Debugf("Skipping '%s' because the config disallows it.", buildStr)
+			logger.Debugf("Skipping '%s' because the config disallows it.", nil, buildStr)
 			continue
 		}
 
-		log.Debugf("Compiling for '%s'.", buildStr)
+		logger.Debugf("Compiling for '%s'.", nil, buildStr)
 		processedNum++
 
 		path := ""
@@ -198,12 +198,12 @@ func main() {
 		outputBytes, err := cmd.CombinedOutput()
 
 		if err != nil {
-			log.Warningf("Failed to compile for '%s'. %s: %s", buildStr, err, strings.Join(strings.FieldsFunc(string(outputBytes), func(r rune) bool { return r == '\n' }), "; "))
+			logger.Warningf("Failed to compile for '%s'. %s: %s", nil, buildStr, err, strings.Join(strings.FieldsFunc(string(outputBytes), func(r rune) bool { return r == '\n' }), "; "))
 		} else {
-			log.Debugf("Successfully compiled for '%s'.", buildStr)
+			logger.Debugf("Successfully compiled for '%s'.", nil, buildStr)
 			successfulNum++
 		}
 	}
 
-	log.Debugf("Compilation of targets completed in %.2f seconds. %d / %d targets successfully compiled (%.2f%%).", time.Since(start).Seconds(), successfulNum, processedNum, float64(successfulNum)/float64(processedNum)*100)
+	logger.Debugf("Compilation of targets completed in %.2f seconds. %d / %d targets successfully compiled (%.2f%%).", nil, time.Since(start).Seconds(), successfulNum, processedNum, float64(successfulNum)/float64(processedNum)*100)
 }
