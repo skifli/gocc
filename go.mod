@@ -5,8 +5,8 @@ go 1.19
 require (
 	github.com/akamensky/argparse v1.4.0 // Better flag parsing
 	github.com/goccy/go-json v0.10.0 // Faster json parsing
-	github.com/skifli/golog v1.0.2 // Logging API
-	golang.org/x/exp v0.0.0-20230105202349-8879d0199aa3 // Slices manipulation functions
+	github.com/skifli/golog v1.0.3 // Logging API
+	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab // Slice manipulation functions
 )
 
 require (
