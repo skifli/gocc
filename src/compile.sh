@@ -1,5 +1,5 @@
-go build -o main main.go
+go build -o gocc gocc.go
 
 clear
 
-./main main.go --config=config.json
+./gocc gocc.go --config=config.json

@@ -17,7 +17,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-var VERSION = "v1.3.1"
+var VERSION = "v1.4"
 
 var logger = golog.NewLogger([]*golog.Log{
 	golog.NewLog([]*os.File{os.Stderr}, golog.FormatterHuman),

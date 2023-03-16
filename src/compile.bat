@@ -1,5 +1,5 @@
-go build -o main.exe main.go
+go build -o gocc.exe gocc.go
 
 cls
 
-main.exe main.go --config=config.json
+gocc.exe gocc.go --config=config.json
