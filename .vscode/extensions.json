@@ -1,8 +1,8 @@
 {
     "recommendations": [
         "christian-kohler.path-intellisense",
+        "golang.go",
         "gruntfuggly.todo-tree",
-        "ms-python.python",
         "pkief.material-icon-theme",
         "zhuangtongfa.material-theme"
     ]
