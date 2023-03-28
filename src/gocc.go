@@ -29,7 +29,7 @@ var successfulNum = 0
 
 func check(err error) {
 	if err != nil {
-		logger.Panic(err, nil)
+		logger.Panic(err)
 	}
 }
 
@@ -99,14 +99,14 @@ func parseConfig() (string, string) {
 			argsError("Config file does not contain required key 'targets'.")
 		}
 
-		logger.Debug("Parsed configuration file.", nil)
+		logger.Debug("Parsed configuration file.")
 	}
 
 	if *dump == "" {
 		*dump = filepath.Join(cwd, "build")
-		logger.Debugf("Dump directory set to '%s' because it wasn't specified.", nil, *dump)
+		logger.Debugf("Dump directory set to '%s' because it wasn't specified.", *dump)
 	} else {
-		logger.Debugf("Dump directory set to '%s'.", nil, *dump)
+		logger.Debugf("Dump directory set to '%s'.", *dump)
 	}
 
 	err = os.MkdirAll(*dump, 0700)
@@ -133,7 +133,7 @@ func checkForUpdate() {
 	tag := bodyJson["tag_name"].(string)
 
 	if tag != VERSION {
-		logger.Warningf("Update available (%s -> %s).", nil, VERSION, tag)
+		logger.Warningf("Update available (%s -> %s).", VERSION, tag)
 	}
 }
 
@@ -163,7 +163,7 @@ func main() {
 
 	builds := strings.FieldsFunc(string(buildsBytes), func(r rune) bool { return r == '\n' })
 
-	logger.Debug("Beginning compilation of targets.", nil)
+	logger.Debug("Beginning compilation of targets.")
 
 	cmd = exec.Command("gcc")
 
@@ -177,11 +177,11 @@ func main() {
 		build := strings.Split(buildStr, "/")
 
 		if checkNotAllowed(buildStr, build) {
-			logger.Debugf("Skipping '%s' because the config disallows it.", nil, buildStr)
+			logger.Debugf("Skipping '%s' because the config disallows it.", buildStr)
 			continue
 		}
 
-		logger.Debugf("Compiling for '%s'.", nil, buildStr)
+		logger.Debugf("Compiling for '%s'.", buildStr)
 		processedNum++
 
 		path := ""
@@ -198,12 +198,12 @@ func main() {
 		outputBytes, err := cmd.CombinedOutput()
 
 		if err != nil {
-			logger.Warningf("Failed to compile for '%s'. %s: %s", nil, buildStr, err, strings.Join(strings.FieldsFunc(string(outputBytes), func(r rune) bool { return r == '\n' }), "; "))
+			logger.Warningf("Failed to compile for '%s'. %s: %s", buildStr, err, strings.Join(strings.FieldsFunc(string(outputBytes), func(r rune) bool { return r == '\n' }), "; "))
 		} else {
-			logger.Debugf("Successfully compiled for '%s'.", nil, buildStr)
+			logger.Debugf("Successfully compiled for '%s'.", buildStr)
 			successfulNum++
 		}
 	}
 
-	logger.Debugf("Compilation of targets completed in %.2f seconds. %d / %d targets successfully compiled (%.2f%%).", nil, time.Since(start).Seconds(), successfulNum, processedNum, float64(successfulNum)/float64(processedNum)*100)
+	logger.Debugf("Compilation of targets completed in %.2f seconds. %d / %d targets successfully compiled (%.2f%%).", time.Since(start).Seconds(), successfulNum, processedNum, float64(successfulNum)/float64(processedNum)*100)
 }
