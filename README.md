@@ -13,7 +13,7 @@
     - [How the configuration file works](#how-the-configuration-file-works)
   - [Known issues](#known-issues)
     - [#1 - **loadinternal: cannot find runtime/cgo**](#1---loadinternal-cannot-find-runtimecgo)
-  - [Stargazers over time](#stargazers-over-time)
+  - [Star History](#star-history)
 
 gocc (pronounced as _**/ɡɒtʃ/**_) makes cross-compilation for [Go](https://go.dev) easy, by automating the process on all OSes. It allows for easy cofiguration of build architectures, and has pre-built binaries for all releases.
 
@@ -83,6 +83,12 @@ This issue is caused by the **`runtime/cgo`** module being disabled. gocc will a
 
 > **Note** On **macOS**, **`clang`** and **`gcc`** are the same, which is why the installation insutrctions for macOS say to install **`clang`**.
 
-## Stargazers over time
+## Star History
 
-[![Stargazers over time](https://starchart.cc/skifli/gocc.svg)](https://starchart.cc/skifli/gocc)
+<a href="https://star-history.com/#skifli/gocc&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=skifli/gocc&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=skifli/gocc&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=skifli/gocc&type=Date" />
+  </picture>
+</a>
