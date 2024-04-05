@@ -85,4 +85,4 @@ This issue is caused by the **`runtime/cgo`** module being disabled. gocc will a
 * [macOS](https://github.com/danielpinto8zz6/c-cpp-compile-run/blob/HEAD/docs/COMPILER_SETUP.md#macos)
 
 > [!NOTE]\
-> **Note** On **macOS**, **`clang`** and **`gcc`** are the same, which is why the installation insutrctions for macOS say to install **`clang`**.
+> On **macOS**, **`clang`** and **`gcc`** are the same, which is why the installation insutrctions for macOS say to install **`clang`**.
