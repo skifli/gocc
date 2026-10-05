@@ -1,10 +1,10 @@
 module github.com/skifli/gocc
 
-go 1.19
+go 1.23
 
 require (
 	github.com/akamensky/argparse v1.4.0 // Better flag parsing
-	github.com/goccy/go-json v0.10.6 // Faster json parsing
+	github.com/goccy/go-json v0.11.2 // Faster json parsing
 	github.com/skifli/golog v1.1.0 // Logging API
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab // Slice manipulation functions
 )
